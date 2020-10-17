@@ -4,19 +4,14 @@
       <img :src="imageSrc" alt="" :id="searchEngineLogo">
       <div :id="searchBar">
         <input :id="inputBox" v-model="searchQuery" placeholder="Enter what ever you want about Cities ..." @keyup.enter="search">
-        <img src="./assets/searchIcon.svg" alt="searchIcon" :id="searchImg" @click="search" class="imgPointer">
+        <img :src="searchIcon" alt="searchIcon" :id="searchImg" @click="search" class="imgPointer">
       </div>
       <div id="divider" v-if="!showIt"></div>
       <p v-if="showIt"><b id="boldInfo">This website is a "Search Engine" based on Space Vector Model.</b><br> designed and developed by : Javad Heyrani, Ebrahim Yaali<br><br>Autumn 2020</p>
     </div>
     <div id="searchResults" v-if="!showIt">
-      <!-- <div id="result" v-for="item in searchResults" v-bind:key="item">
-        <h4>{{ item.name }}</h4>
-        <h6>Similarity : {{ item.city }}%</h6>
-        <p>{{ item.compony.catchPhrase }}</p>
-        <div id="divider" style="width: 50vw; margin-top: 20px;"></div>
-      </div> -->
-      <div id="result" v-for="item in searchResults" v-bind:key="item">
+      <h1 v-if="noResult" id="noResult">We can't found any result.</h1>
+      <div id="result" v-for="(item , index) in searchResult" v-bind:key="index">
         <h4>{{ item.key }}</h4>
         <h6>Similarity : {{ item.similarity }}%</h6>
         <p>{{ item.content }}</p>
@@ -34,9 +29,11 @@ export default {
   data: () => {
     return {
       showIt: true,
+      noResult: false,
       searchQuery: '',
       searchResult: {},
       imageSrc: require('./assets/SearchEngineLogo.svg'),
+      searchIcon: require('./assets/searchIcon.svg'),
       main: 'main',
       searchEngineLogo: 'searchEngineLogo',
       searchBar: 'searchBar',
@@ -48,16 +45,20 @@ export default {
     search () {
       this.showIt = false
       this.imageSrc = require('./assets/SearchEngineLogoResult.svg')
+      this.searchIcon = require('./assets/loading.gif')
       this.main = 'mainResult'
       this.searchEngineLogo = 'searchEngineLogoResult'
       this.searchBar = 'searchBarResult'
       this.inputBox = 'inputBoxResult'
       this.searchImg = 'searchImgResult'
-      var vm = this
       axios.post('/', { query: this.searchQuery })
         .then((res) => {
-          vm.searchResult = res.body
-          console.log(res.body)
+          this.searchResult = res.data
+          this.searchIcon = require('./assets/searchIcon.svg')
+          this.noResult = false
+          if (this.searchResult.length === 0) {
+            this.noResult = true
+          }
         }).catch((error) => {
           console.log(error)
         })
@@ -224,5 +225,11 @@ input:focus{
   float: right;
   color: #fd6a6a;
   font-size: 0.8rem;
+}
+#noResult {
+  color: #ffcccc;
+  position: relative;
+  margin: 35px 20px;
+  font-size: 3rem;
 }
 </style>
