@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'App',
   data: () => {
@@ -51,15 +53,14 @@ export default {
       this.searchBar = 'searchBarResult'
       this.inputBox = 'inputBoxResult'
       this.searchImg = 'searchImgResult'
-      fetch('https://search-engine-server-1187.herokuapp.com/', {
-        method: 'POST',
-        headers: {},
-        body: JSON.stringify({
-          query: this.searchQuery
+      var vm = this
+      axios.post('https://search-engine-server-1187.herokuapp.com/', { query: this.searchQuery })
+        .then((res) => {
+          vm.searchResult = res.body
+          console.log(res.body)
+        }).catch((error) => {
+          console.log(error)
         })
-      }).then((res) => {
-        console.log(res.body)
-      })
     }
   }
 }
