@@ -54,7 +54,7 @@ export default {
       this.inputBox = 'inputBoxResult'
       this.searchImg = 'searchImgResult'
       var vm = this
-      axios.post('https://search-engine-server-1187.herokuapp.com/', { query: this.searchQuery })
+      axios.post('/', { query: this.searchQuery })
         .then((res) => {
           vm.searchResult = res.body
           console.log(res.body)
