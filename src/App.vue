@@ -6,7 +6,7 @@
         <input :id="inputBox" v-model="searchQuery" placeholder="Enter what ever you want about Cities ..." @keyup.enter="search">
         <img :src="searchIcon" alt="searchIcon" :id="searchImg" @click="search" class="imgPointer">
       </div>
-      <div id="divider" v-if="!showIt"></div>
+      <!-- <div id="divider" v-if="!showIt"></div> -->
       <p v-if="showIt"><b id="boldInfo">This website is a "Search Engine" based on Space Vector Model.</b><br> designed and developed by : Javad Heyrani, Ebrahim Yaali<br><br>Autumn 2020</p>
     </div>
     <div id="searchResults" v-if="!showIt">
@@ -15,7 +15,7 @@
         <h4>{{ item.key }}</h4>
         <h6>Similarity : {{ item.similarity }}%</h6>
         <p>{{ item.content }}</p>
-        <div id="divider" style="width: 50vw; margin-top: 20px;"></div>
+        <!-- <div id="divider" style="width: 50vw; margin-top: 20px;"></div> -->
       </div>
     </div>
   </div>
@@ -54,6 +54,8 @@ export default {
       axios.post('/', { query: this.searchQuery })
         .then((res) => {
           this.searchResult = res.data
+          this.searchResult.sort((a, b) => a.similarity - b.similarity)
+          this.searchResult.reverse()
           this.searchIcon = require('./assets/searchIcon.svg')
           this.noResult = false
           if (this.searchResult.length === 0) {
@@ -194,14 +196,16 @@ input:focus{
 #searchResults {
   position: relative;
   padding: 0px 10px;
-  margin: 0px 10px;
+  margin: 40px 10px;
 }
 #result {
-  width: 60vw;
-  padding: 10px;
-  border-radius: 3px;
+  width: 75vw;
+  padding: 20px 30px;
+  border-radius: 7px;
   text-align: left;
   color: #2b2b2b;
+  background-color: #fbfbfb;
+  border: 1px solid #dfdfdf;
   margin-top: 15px;
 }
 #result h4 {
